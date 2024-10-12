@@ -1,13 +1,12 @@
-import React from "react";
+import React from 'react'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import "./Carousel.scss";
-import { responsive } from "./data";
+import {responsive} from "./data";
 
-const ProductCarousel = ({ products }) => {
+const ProductCarousel = ({products}) => {
   return (
     <div>
-      <Carousel
+        <Carousel
         showDots={false}
         responsive={responsive}
         infinite={true}
@@ -15,11 +14,11 @@ const ProductCarousel = ({ products }) => {
         autoPlaySpeed={3000}
         customTransition="all 500ms ease"
         transitionDuration={1000}
-      >
+        >
         {products}
-      </Carousel>
+        </Carousel>    
     </div>
-  );
-};
+  )
+}
 
-export default ProductCarousel;
+export default ProductCarousel

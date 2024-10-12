@@ -1,53 +1,42 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  CALCULATE_SUBTOTAL,
-  selectCartItems,
-  selectCartTotalAmount,
-  selectCartTotalQuantity,
-} from "../../../redux/features/product/cartSlice";
-
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { CALCULATE_SUBTOTAL } from '../../../redux/features/product/cartSlice';
+import { Link } from 'react-router-dom';
 import styles from "./CheckoutSummary.module.scss";
-import Card from "../../card/Card";
-import { useDispatch } from "react-redux";
-import { CartDiscount } from "../../verifyCoupon/VerifyCoupon";
+import Card from '../../card/Card';
 
 const CheckoutSummary = () => {
-  const { coupon } = useSelector((state) => state.coupon);
-  const cartItems = useSelector(selectCartItems);
-  // console.log(cartItems);
-  const cartTotalAmount = useSelector(selectCartTotalAmount);
-  const cartTotalQuantity = useSelector(selectCartTotalQuantity);
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const { cartItems, cartTotalQuantity, cartTotalAmount } = useSelector((state) => state.cart);
 
-  useEffect(() => {
-    dispatch(CALCULATE_SUBTOTAL({ coupon: coupon }));
-  }, [cartItems, dispatch, coupon]);
+    useEffect(() => {
+        dispatch(CALCULATE_SUBTOTAL());
+      }, [cartItems, dispatch]);
+
 
   return (
     <div>
-      <h3>Checkout Summary</h3>
-      {/* <pre>{JSON.stringify(cartItems, null, 2)}</pre> */}
-      <div>
-        {cartItems.lenght === 0 ? (
-          <>
-            <p>No item in your cart.</p>
-            <button className="--btn">
-              <Link to="/#products">Back To Shop</Link>
-            </button>
-          </>
-        ) : (
-          <div>
-            <p>
-              <b>{`Cart item(s): ${cartTotalQuantity}`}</b>
-            </p>
-            <div className={styles.text}>
-              <h4>Subtotal:</h4>
-              <h3>{cartTotalAmount.toFixed(2)}</h3>
-            </div>
-            <CartDiscount />
-            {cartItems.map((item, index) => {
+        <h3>Checkout Summary</h3>
+        <div>
+            {cartItems.lenght === 0 ? (
+               <>
+                 <p>No item in your cart.</p>
+                 <button className="--btn">
+                   <Link to="/#products">Back To Shop</Link>
+                 </button>
+               </>
+            ) : (
+                <div>
+                    <p>
+                      <b>{`Cart item(s): ${cartTotalQuantity}`}</b>
+                    </p>
+
+                <div className={styles.text}>
+                    <h4>Subtotal:</h4>
+                    <h3>{cartTotalAmount.toFixed(2)}</h3>
+                </div>
+
+                {cartItems.map((item) => {
               const { _id, name, price, cartQuantity } = item;
               return (
                 <Card key={_id} cardClass={styles.card}>
@@ -58,11 +47,12 @@ const CheckoutSummary = () => {
                 </Card>
               );
             })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
 
-export default CheckoutSummary;
+                </div>
+            )}
+        </div>
+    </div>
+  )
+}
+
+export default CheckoutSummary

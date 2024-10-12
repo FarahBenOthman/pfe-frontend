@@ -1,30 +1,36 @@
-import React, { useState } from "react";
-import Card from "../../card/Card";
+import React, { useState } from 'react';
+import Card from '../../card/Card';
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
 import { toast } from "react-toastify";
 
+// File upload end
+
+  const url = "https://api.cloudinary.com/v1_1/zinotrust/image/upload";
+  const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
+  //const url = "";
+
 const UploadWidget = ({ files, setFiles }) => {
-  // File upload start
+
   const [selectedImages, setSelectedImages] = useState([]);
   const [images, setImages] = useState([]);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
 
-  const addImages = (event) => {
-    const selectedFiles = event.target.files;
+  const addImages = (e) => {
+    const selectedFiles = e.target.files;
     const selectedFilesArray = Array.from(selectedFiles);
 
     const imagesArray = selectedFilesArray.map((file) => {
       return URL.createObjectURL(file);
     });
 
-    setImages((previousImages) => previousImages.concat(selectedFilesArray));
+    setImages((prevImages) => prevImages.concat(selectedFilesArray));
     // console.log(images);
-    setSelectedImages((previousImages) => previousImages.concat(imagesArray));
+    setSelectedImages((prevImages) => prevImages.concat(imagesArray));
 
     // FOR BUG IN CHROME
-    event.target.value = "";
+    e.target.value = "";
   };
 
   const removeImage = (image) => {
@@ -34,10 +40,8 @@ const UploadWidget = ({ files, setFiles }) => {
     setImages(images.filter((img, index) => index !== imageIndex));
     URL.revokeObjectURL(image);
   };
-  // File upload end
 
-  const url = "https://api.cloudinary.com/v1_1/zinotrust/image/upload";
-
+  
   const uploadImages = async () => {
     setUploading(true);
     console.log(images);
@@ -46,8 +50,8 @@ const UploadWidget = ({ files, setFiles }) => {
     for (let i = 0; i < images.length; i++) {
       let file = images[i];
       formData.append("file", file);
-      formData.append("upload_preset", "mqxbycre");
-      formData.append("folder", "shopito");
+      formData.append("upload_preset", upload_preset);
+      formData.append("folder", "sportShop");
 
       fetch(url, {
         method: "POST",
@@ -57,6 +61,7 @@ const UploadWidget = ({ files, setFiles }) => {
           return response.json();
         })
         .then((data) => {
+          console.log(data);
           imageUrls.push(data.secure_url);
           setProgress(imageUrls.length);
 
@@ -77,32 +82,9 @@ const UploadWidget = ({ files, setFiles }) => {
         });
     }
   };
+  
+  
 
-  //   const uploadImages = async () => {
-  //     console.log(images);
-  //     let files = [];
-  //     try {
-  //       for (let i = 0; i < images.length; i++) {
-  //         let formData = new FormData();
-  //         formData.append("file", images[i]);
-  //         formData.append("upload_preset", "mqxbycre");
-
-  //         const res = await instance.post(url, formData);
-  //         console.log(res.data.url);
-  //         return res.data;
-  //         // .then((response) => {
-  //         //   console.log(response.data);
-  //         //   return response.data;
-  //         // });
-
-  //         //   .then((data) => {
-  //         //     console.log(data.secure_url);
-  //         //   });
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
 
   return (
     <div>
@@ -133,28 +115,24 @@ const UploadWidget = ({ files, setFiles }) => {
             <>
               <div className="--center-all">
                 <button
-                  className="--btn --btn-danger --btn-large"
-                  disabled={uploading}
-                  onClick={() => {
-                    uploadImages();
-                  }}
+                  className="--btn --btn-danger --btn-large" disabled={uploading} onClick={uploadImages}
                 >
                   {uploading
-                    ? `Uploading... ${progress} of ${selectedImages.length}`
-                    : `Upload ${selectedImages.length} Image${
-                        selectedImages.length === 1 ? "" : "s"
-                      }`}
+                    ? `Uploading... ${progress} of ${images.length}`
+                    : `Upload ${images.length} Image(s)`}  {/* ${
+                      selectedImages.length === 1 ? "" : "s"
+                    } */}
                 </button>
               </div>
             </>
           ))}
 
         <div className={selectedImages.length > 0 ? "images" : ""}>
-          {selectedImages.length !== 0 &&
+          {selectedImages !== 0 &&
             selectedImages.map((image, index) => {
               return (
                 <div key={image} className="image">
-                  <img src={image} width="200" alt="productImage" />
+                  <img src={image}  alt="productImage" width={200} />
                   <button className="--btn" onClick={() => removeImage(image)}>
                     <BsTrash size={25} />
                   </button>
@@ -168,4 +146,4 @@ const UploadWidget = ({ files, setFiles }) => {
   );
 };
 
-export default UploadWidget;
+export default UploadWidget

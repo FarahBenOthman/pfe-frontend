@@ -1,48 +1,47 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../card/Card";
+
+import { createBrand, getBrands, getCategories } from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../loader/Loader";
 import { toast } from "react-toastify";
-import {
-  createBrand,
-  getBrands,
-  getCategories,
-} from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
 
-const CreateCategory = ({ reloadBrands }) => {
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
+const CreateBrand = () => {
 
-  const dispatch = useDispatch();
+    const [name, setName] = useState("");
+    const [category, setCategory] = useState("");
+    const { categories } = useSelector((state) => state.category);
+
+    const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getCategories());
-    dispatch(getBrands());
+   // dispatch(getBrands());
   }, [dispatch]);
-  const { isLoading, categories } = useSelector((state) => state.category);
 
-  const saveCat = async (e) => {
+
+  const saveBrand = async (e) => {
     e.preventDefault();
-    if (name.length < 2) {
-      return toast.error("Coupon must be up to 2 characters");
-    }
-    if (!category) {
-      return toast.error("Please add a parent category");
-    }
-    const formData = {
-      name,
-      category,
-    };
-    console.log(formData);
-    dispatch(createBrand(formData));
-    dispatch(getBrands());
-    setName("");
-    reloadBrands();
-  };
+    if (name.length < 3) {
+        return toast.error("Brand name must be up to 2 characters");
+      }
+      if (!category) {
+        return toast.error("Please add a parent category");
+      }
+      const formData = {
+        name,
+        category,
+      };
+     // console.log(formData);
+      await dispatch(createBrand(formData));
+      await dispatch(getBrands());
+      setName("");
+     // reloadBrands();
+  
+  }
 
   return (
     <>
-      {isLoading && <Loader />}
-      <div className="--underline"></div>
+     <div className="--underline"></div>
       <br />
       <div className="--mb2">
         <h3>Create Brand</h3>
@@ -51,7 +50,7 @@ const CreateCategory = ({ reloadBrands }) => {
         </p>
         <Card cardClass={"card"}>
           <br />
-          <form onSubmit={saveCat}>
+          <form onSubmit={saveBrand}>
             <label>Brand Name:</label>
             <input
               type="text"
@@ -61,7 +60,7 @@ const CreateCategory = ({ reloadBrands }) => {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <label>Parent category</label>
+             <label>Parent category</label>
             <select
               name="category"
               className="form-control"
@@ -70,9 +69,7 @@ const CreateCategory = ({ reloadBrands }) => {
               <option>Select category</option>
               {categories.length > 0 &&
                 categories.map((cat) => (
-                  <option key={cat._id} value={cat._name}>
-                    {cat.name}
-                  </option>
+                  <option key={cat._id} value={cat.name}>{cat.name}</option>
                 ))}
             </select>
 
@@ -88,4 +85,4 @@ const CreateCategory = ({ reloadBrands }) => {
   );
 };
 
-export default CreateCategory;
+export default CreateBrand;

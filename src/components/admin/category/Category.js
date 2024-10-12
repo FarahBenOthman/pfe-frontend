@@ -1,28 +1,29 @@
-import React, { useEffect } from "react";
-import CategoryList from "./CategoryList";
-import CreateCategory from "./CreateCategory";
-import { useDispatch, useSelector } from "react-redux";
-import { getCategories } from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
+import React from "react";
+import "./Category.scss"
+import CreateCategory from './CreateCategory'
+import CategoryList from './CategoryList'
+//import { getCategories } from '../../../redux/features/categoryAndBrand/categoryAndBrandSlice'
+//import { useSelector } from 'react-redux'
 
 const Category = () => {
-  const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.category);
-
-  const reloadCategory = () => {
-    dispatch(getCategories());
-  };
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
+   // const dispatch = useDispatch();
+  //  const { categories } = useSelector((state) => state.category);
+  
+    //const reloadCategory = () => {
+     // dispatch(getCategories());
+    //};
+  //  useEffect(() => {
+    //  dispatch(getCategories());
+    //}, [dispatch]);
 
   return (
     <section>
-      <div className="container coupon">
-        <CreateCategory reloadCategory={reloadCategory} />
+        <div className="container coupon">
+        <CreateCategory  />  {/* reloadCategory={reloadCategory} */}
         <CategoryList />
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Category;
+export default Category

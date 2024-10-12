@@ -1,122 +1,97 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Loader from "../../loader/Loader";
-import {
-  createProduct,
-  selectIsLoading,
-} from "../../../redux/features/product/productSlice";
-import ProductForm from "../productForm/ProductForm";
-
+import React, { useEffect, useState } from 'react';
 import "./AddProduct.scss";
+import ProductForm from '../productForm/ProductForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { getBrands, getCategories } from '../../../redux/features/categoryAndBrand/categoryAndBrandSlice';
+import { createProduct } from "../../../redux/features/product/productSlice";
 import { toast } from "react-toastify";
-import {
-  getBrands,
-  getCategories,
-} from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
 
 const initialState = {
-  name: "",
-  category: "",
-  brand: "",
-  quantity: "",
-  price: "",
-  color: "",
-  regularPrice: "",
-};
+    name: "",
+    category: "",
+    brand: "",
+    quantity: "",
+    price: "",
+    color: "",
+    regularPrice: "",
+  };
 
 const AddProduct = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(initialState);
-  const [productImage, setProductImage] = useState([]);
-  const [files, setFiles] = useState([]);
-  const [imagePreview, setImagePreview] = useState([]);
-  const [description, setDescription] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [product, setProduct] = useState(initialState);
+    const [description, setDescription] = useState("");
+    const [files, setFiles] = useState([]);
+    
+   // const { message } = useSelector((state) => state.product);
+    //const { categories, brands } = useSelector((state) => state.category);
+    const { name, category, brand, price, quantity, color, regularPrice } = product;
+    
 
-  const isLoading = useSelector(selectIsLoading);
-
-  const { name, category, brand, price, quantity, color, regularPrice } =
-    product;
-  const { categories, brands } = useSelector((state) => state.category);
-
-  useEffect(() => {
-    dispatch(getCategories());
-    dispatch(getBrands());
-  }, [dispatch]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
-  };
-
-  const generateKSKU = (category) => {
-    const letter = category.slice(0, 3).toUpperCase();
-    const number = Date.now();
-    const sku = letter + "-" + number;
-    return sku;
-  };
-
-  const saveProduct = async (e) => {
-    e.preventDefault();
-    if (files.length < 1) {
-      return toast.info("Please add an image");
-    }
-
-    const formData = {
-      name: name,
-      sku: generateKSKU(category),
-      category: category,
-      brand: brand,
-      color: color,
-      quantity: Number(quantity),
-      regularPrice: regularPrice,
-      price: price,
-      description: description,
-      image: files,
+ const generateSKU = (category) => {
+      const letter = category.slice(0, 3).toUpperCase();
+      const number = Date.now();
+      const sku = letter + "-" + number;
+      return sku;
     };
 
-    // console.log(formData);
+    const saveProduct = async (e) => {
+        e.preventDefault();
 
-    await dispatch(createProduct(formData));
+        if (files.length < 1) {
+          return toast.error("Please add an image");
+        }
 
-    navigate("/admin/all-products");
-  };
-  const [filteredBrands, setFilteredBrands] = useState([]);
-  function filterBrands(selectedCategoryName) {
-    const newBrands = brands.filter(
-      (brand) => brand.category === selectedCategoryName
-    );
-    setFilteredBrands(newBrands);
-  }
+       const formData = {
+        name: name,
+        sku: generateSKU(category),
+        category,
+        brand,
+        color,
+        quantity: Number(quantity),
+        regularPrice,
+        price,
+        description,
+        image: files,
+  
+      };
 
-  useEffect(() => {
-    filterBrands(category);
-    // console.log(filteredBrands);
-  }, [category]);
+     // console.log(formData);
+     await dispatch(createProduct(formData));
+
+     navigate("/admin/all-products");
+
+    };
+
+   // useEffect(() => {
+     // if (message === "Product created successfully") {
+     //   navigate("/admin/all-products");
+    //  }
+    //  dispatch(RESET_PROD());
+   // }, [message, navigate, dispatch]);
+
+    
+
 
   return (
-    <div>
-      {isLoading && <Loader />}
-      <h3 className="--mt">Add New Product</h3>
+    <section>
+        <div className="container">
+        <h3 className="--mt">Add New Product</h3>
 
-      <ProductForm
-        files={files}
-        setFiles={setFiles}
-        product={product}
-        productImage={productImage}
-        imagePreview={imagePreview}
-        setImagePreview={setImagePreview}
-        description={description}
-        setDescription={setDescription}
-        handleInputChange={handleInputChange}
-        saveProduct={saveProduct}
-        categories={categories}
-        filteredBrands={filteredBrands}
-        isEditing={false}
-      />
-    </div>
-  );
-};
+        <ProductForm
+          saveProduct={saveProduct}
+          product={product}
+          setProduct={setProduct}
+          isEditing={false}
+          description={description}
+          setDescription={setDescription}
+          files={files}
+          setFiles={setFiles}
+        />
+        </div>
+    </section>
+  )
+}
 
-export default AddProduct;
+export default AddProduct

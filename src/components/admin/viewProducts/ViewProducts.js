@@ -1,51 +1,36 @@
 import React, { useEffect, useState } from "react";
-import "./ViewProducts.scss";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { AiOutlineEye } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import { Link } from "react-router-dom";
-
-import {
-  deleteProduct,
-  getProducts,
-} from "../../../redux/features/product/productSlice";
+import { selectIsLoggedIn } from "../../../redux/features/auth/authSlice";
+import { getProducts, deleteProduct } from "../../../redux/features/product/productSlice";
 import Search from "../../search/Search";
 import { Spinner } from "../../loader/Loader";
 import { shortenText } from "../../../utils";
-import { selectIsLoggedIn } from "../../../redux/features/auth/authSlice";
-import {
-  FILTER_BY_SEARCH,
-  selectFilteredProducts,
-} from "../../../redux/features/product/filterSlice";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { AiOutlineEye } from "react-icons/ai";
+import ReactPaginate from "react-paginate";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const ViewProducts = () => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const { products, isLoading, isError, message } = useSelector(
-    (state) => state.product
-  );
-  const filteredProducts = useSelector(selectFilteredProducts);
-  // console.log(filteredProducts);
+  const { products, isLoading } = useSelector((state) => state.product);
+
 
   useEffect(() => {
-    if (isLoggedIn === true) {
+    if (isLoggedIn) {
       dispatch(getProducts());
     }
-
-    if (isError) {
-      console.log(message);
-    }
-  }, [isLoggedIn, isError, message, dispatch]);
+  }, [isLoggedIn, dispatch]);
 
   const delProduct = async (id) => {
     console.log(id);
     await dispatch(deleteProduct(id));
     await dispatch(getProducts());
   };
+
 
   const confirmDelete = (id) => {
     confirmAlert({
@@ -64,45 +49,44 @@ const ViewProducts = () => {
     });
   };
 
-  // Begin Pagination
-  const itemsPerPage = 6;
-  const [itemOffset, setItemOffset] = useState(0);
-  const endOffset = itemOffset + itemsPerPage;
-  const currentItems = filteredProducts.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
-    setItemOffset(newOffset);
-  };
-  // End Pagination
+   // Begin Pagination
+   const itemsPerPage = 6;
+   const [itemOffset, setItemOffset] = useState(0);
+   const endOffset = itemOffset + itemsPerPage;
+   const currentItems = products.slice(itemOffset, endOffset);
+   const pageCount = Math.ceil(products.length / itemsPerPage);
+ 
+   const handlePageClick = (event) => {
+     const newOffset = (event.selected * itemsPerPage) % products.length;
+     setItemOffset(newOffset);
+   };
+   // End Pagination
+ 
 
-  useEffect(() => {
-    dispatch(FILTER_BY_SEARCH({ products, search }));
-  }, [products, search, dispatch]);
+
 
   return (
-    <div className="product-list">
-      <div className="table">
-        <div className="--flex-between --flex-dir-column">
-          <span>
+    <section>
+      <div className="container product-list">
+        <div className="table">
+          <div className="--flex-between --flex-dir-column">
+           <span>
             <h3>All Products</h3>
             <p>
-              ~ <b>{filteredProducts.length} Products Found</b>
+              ~ <b>{products.length} Products Found</b>
             </p>
-          </span>
-          <span>
-            <Search
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </span>
+           </span>
+           <span>
+           <Search value={search} onChange={(e) => setSearch(e.target.value)} />
+           </span>
+          </div>
         </div>
-
         {isLoading && <Spinner />}
 
         <div className="table">
-          {!isLoading && currentItems.length === 0 ? (
+
+        {!isLoading && products.length === 0 ? (
             <p>-- No product found...</p>
           ) : (
             <table>
@@ -126,15 +110,9 @@ const ViewProducts = () => {
                       <td>{index + 1}</td>
                       <td>{shortenText(name, 16)}</td>
                       <td>{category}</td>
-                      <td>
-                        {"$"}
-                        {price}
-                      </td>
+                      <td>{"$"}{price}</td>
                       <td>{quantity}</td>
-                      <td>
-                        {"$"}
-                        {price * quantity}
-                      </td>
+                      <td>{"$"}{price * quantity}</td>
                       <td className="icons">
                         <span>
                           <Link to={`/product-details/${_id}`}>
@@ -147,11 +125,7 @@ const ViewProducts = () => {
                           </Link>
                         </span>
                         <span>
-                          <FaTrashAlt
-                            size={20}
-                            color={"red"}
-                            onClick={() => confirmDelete(_id)}
-                          />
+                          <FaTrashAlt size={20} color={"red"} onClick={() => confirmDelete(_id)} />
                         </span>
                       </td>
                     </tr>
@@ -160,6 +134,7 @@ const ViewProducts = () => {
               </tbody>
             </table>
           )}
+
         </div>
         <ReactPaginate
           breakLabel="..."
@@ -176,8 +151,8 @@ const ViewProducts = () => {
           activeLinkClassName="activePage"
         />
       </div>
-    </div>
-  );
-};
+    </section>
+  )
+}
 
-export default ViewProducts;
+export default ViewProducts

@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaTrashAlt } from "react-icons/fa";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import {
-  deleteBrand,
-  getBrands,
-  getCategories,
-} from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
+import { deleteBrand, getBrands } from "../../../redux/features/categoryAndBrand/categoryAndBrandSlice";
 
-const BrandList = ({ brands }) => {
-  const { isLoading } = useSelector((state) => state.category);
+
+const BrandList = () => {
+  const { brands } = useSelector((state) => state.category);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBrands());
+  }, [dispatch]);
 
   const confirmDelete = (slug) => {
     confirmAlert({
@@ -80,6 +81,6 @@ const BrandList = ({ brands }) => {
       </div>
     </div>
   );
-};
+}
 
-export default BrandList;
+export default BrandList
