@@ -8,7 +8,7 @@ import { validateEmail } from '../../utils'
 import Loader from '../../components/loader/Loader'
 import { useDispatch, useSelector } from 'react-redux'
 import { RESET_AUTH, login } from '../../redux/features/auth/authSlice'
-import { getCartDB, saveCartDB } from '../../redux/features/product/cartSlice'
+//import { getCartDB, saveCartDB } from '../../redux/features/product/cartSlice'
 
 const Login = () => {
     const [email, setEmail] = useState("")
@@ -47,17 +47,17 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn && isSuccess) {
-            if (redirect === "cart") {
-              dispatch(saveCartDB({cartItems: JSON.parse(localStorage.getItem("cartItems")),}));
-              return navigate("/cart");
-            }
-            dispatch(getCartDB());
-            // navigate("/");
+           // if (redirect === "cart") {
+             // dispatch(saveCartDB({cartItems: JSON.parse(localStorage.getItem("cartItems")),}));
+            //  return navigate("/cart");
+           // }
+            //dispatch(getCartDB());
+             navigate("/");
             // window.location.reload();
           }
 
         dispatch(RESET_AUTH())
-      }, [isSuccess, isLoggedIn, dispatch, navigate, redirect])
+      }, [isSuccess, isLoggedIn, dispatch, navigate, redirect]) 
 
   return (
     <>
@@ -88,4 +88,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login; 

@@ -80,7 +80,7 @@ const cartSlice = createSlice({
             toast.info(`${action.payload.name} increased by one`, {
               position: "top-left",
             });
-          }
+          } 
         } else {
           // Item doesn't exists in the cart
           // Add item to the cart

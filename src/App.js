@@ -18,13 +18,23 @@ import Product from './pages/shop/Product';
 import ProductDetails from './components/product/productDetails/ProductDetails';
 import Cart from './pages/cart/Cart';
 import CheckoutDetails from './pages/checkout/CheckoutDetails';
-import Checkout from './pages/checkout/checkout';
+import Checkout from "./pages/checkout/Checkout.js";
 import CheckoutSuccess from './pages/checkout/CheckoutSuccess';
-import Order from './pages/order/Order';
 import OrderDetails from './pages/order/OrderDetails';
+import OrderHistory from "./pages/order/OrderHistory.js";
+import CheckoutPaypal from './pages/checkout/CheckoutPaypal.js';
+import Wishlist from './pages/wishlist/Wishlist.js';
+import ReviewProducts from "./pages/reviewProduct/ReviewProducts";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutWallet from './pages/checkout/CheckoutWallet.js';
 
 //import { Spinner } from './components/loader/Loader';
 //import Loader from './components/loader/Loader';
+
+// Chargez votre clé publique Stripe ici
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const App = () => {
   axios.defaults.withCredentials = true;
@@ -77,12 +87,32 @@ const App = () => {
        <Route path="/product-details/:id" element={<ProductDetails />} />
        <Route path="/cart" element={<Cart />} />
 
+       <Route path="/wishlist" element={<Wishlist />} />
+
        <Route path="/checkout-success" element={<CheckoutSuccess />} />
-       <Route path="/order-history" element={<Order />} />
+       
+       <Route path="/order-history" element={<OrderHistory />} />
+       <Route path="/order-details/:id" element={<OrderDetails />} />
+
        <Route path="/checkout-details/:id" element={<OrderDetails />} />
 
        <Route path="/checkout-details" element={<CheckoutDetails />} />
-       <Route path="/checkout-stripe" element={<Checkout />} />
+
+       <Route path="/checkout-stripe" element={<Checkout />} /> 
+
+           {/*  <Route path="/checkout-stripe" element={
+            <Elements stripe={stripePromise}>
+              <Checkout />
+            </Elements>
+          } />*/}
+
+          <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
+
+          <Route path="/checkout-wallet" element={<CheckoutWallet />} />
+
+          <Route path="/review-product/:id" element={<ReviewProducts />} />
+
+
 
 
        <Route path="/admin/*" element={

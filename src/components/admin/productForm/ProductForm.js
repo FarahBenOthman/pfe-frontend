@@ -64,15 +64,16 @@ const ProductForm = ({
             <label>Product Images:</label>
           <div className="slide-container">
             <aside>
-              {files.length > 0 &&
-                files.map((image) => (
-                  <div key={image} className="thumbnail">
-                    <img src={image} alt="productImage" height={100} />
-                    <div>
-                      <BsTrash size={15} className="thumbnailIcon" onClick={() => removeImage(image)} /> {/*  */}
-                    </div>
-                  </div>
-                ))}
+            {files.length > 0 &&
+  files.map((image, index) => (
+    <div key={index} className="thumbnail">
+      <img src={image} alt="productImage" height={100} />
+      <div>
+        <BsTrash size={15} className="thumbnailIcon" onClick={() => removeImage(image)} />
+      </div>
+    </div>
+  ))}
+
               {files.length < 1 && (
                 <p className="--m">No image set for this poduct.</p>
               )}

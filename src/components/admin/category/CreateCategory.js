@@ -28,9 +28,9 @@ const CreateCategory = () => {
     <>
       <div className="--mb2">
         <h3>Create Category</h3>
-        <p>
+        {/*<p>
           Use the form to <b>Create a Category.</b>
-        </p>
+  </p>*/}
         <Card cardClass={"card"}>
            <br />
            <form onSubmit={saveCategory}>

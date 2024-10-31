@@ -1,56 +1,102 @@
 .product {
-    display: flex;
-    position: relative;
-  
-    .filter {
-      width: 20%;
-      height: max-content;
-    //  padding: 3rem 1rem 3rem 1rem;
-    padding: 5rem 5rem;
-      border: 1px solid #ccc;
-      transition: all 0.3s;
-      & > * {
-        width: 100%;
-      }
+  display: flex;
+  position: relative;
+  width: 100%; // Occuper toute la largeur de la page
+  max-width: 1800px; // Limiter la largeur maximale pour un design plus élégant
+  margin: 0 auto; // Centrer le produit dans la page
+  background-color: #ffffff; // Fond blanc pour un look propre
+  border-radius: 10px; // Coins arrondis pour un aspect moderne
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); // Ombre pour la profondeur
+  overflow: hidden; // Évite que le contenu déborde
+
+  .filter {
+    width: 25%; // Largeur pour le panneau de filtre
+    height: max-content;
+    padding: 2rem 1rem; // Espacement intérieur
+    background-color: #ffffff; // Couleur de fond modifiée pour la partie catégorie
+    border-right: 2px solid #ffffff; // Bordure droite pour séparer
+    transition: background-color 0.3s ease; // Transition pour le survol
+
+    &:hover {
+      background-color: #ffffff; // Changer la couleur de fond au survol
     }
-  
-    .content {
-      width: 80%;
-      padding-left: 5px;
-      position: relative;
-      .icon {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        right: 0;
-        top: 0;
-        cursor: pointer;
-  
-        & > * {
-          padding-left: 5px;
-        }
-      }
-    }
-    @media screen and (max-width: 700px) {
-      .filter {
-        width: 30%;
-        background-color: #fff;
-        border: 2px solid #ccc;
-        position: absolute;
-        left: -200%;
-        // height: 100%;
-        padding: 1rem;
-        z-index: 99;
-      }
-      .show {
-        left: 0;
-      }
-      .content {
-        width: 100%;
-        .icon {
-          display: flex;
-        }
+
+    & > * {
+      width: 100%;
+      margin-bottom: 1.2rem; // Espacement entre les éléments
+      transition: color 0.3s ease; // Transition pour le survol des éléments
+
+      &:hover {
+        color: #ffffff; // Couleur des éléments au survol
       }
     }
   }
+
+  ////////////////////
+   .header {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    padding: 20px; 
+    overflow: visible; 
+    background-color: #00ff73; /* Light background for better visibility */
+}
+
+.search-bar {
+    margin-top: 10px; 
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 15px; 
+    }
+}
+
+
+  .content {
+    width: 80%; // Largeur pour le contenu principal
+    padding: 1.5rem; // Espacement intérieur
+    position: relative;
+
+    .icon {
+      display: none; // Par défaut, icônes cachées
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      right: 1.5rem; // Alignement à droite
+      top: 1.5rem; // Alignement en haut
+      cursor: pointer;
+      background-color: #00ff73; // Couleur de fond pour les icônes
+      color: rgb(0, 0, 0); // Couleur du texte d'icône
+      border-radius: 50%; // Arrondir les icônes
+      padding: 0.6rem; // Espacement interne
+
+      &:hover {
+        background-color: #0056b3; // Changer la couleur au survol
+      }
+
+      & > * {
+        padding-left: 0.5rem; // Réduire l'espacement à l'intérieur des icônes
+      }
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    flex-direction: column; // Mise en colonne sur petits écrans
+
+    .filter {
+      width: 100%; // Utiliser toute la largeur sur petits écrans
+      border-right: none; // Supprimer la bordure droite
+      margin-bottom: 1rem; // Espacement entre les filtres et le contenu
+    }
+
+    .content {
+      width: 100%; // Utiliser toute la largeur sur petits écrans
+      padding: 1rem; // Réduire le padding
+
+      .icon {
+        display: flex; // Afficher les icônes sur petits écrans
+      }
+    }
+  }
+}

@@ -43,14 +43,14 @@ const Home = () => {
   })
   ?.filter((product, index) => index < 7);
 
-  const phones = products
-    ?.filter((product) => {
-      return product.quantity > 0;
-    })
-    ?.filter((product) => {
-      return product.category === "Phone";
-    })
-    ?.filter((product, index) => index < 7);
+ // const phones = products
+   // ?.filter((product) => {
+   //   return product.quantity > 0;
+   // })
+  //  ?.filter((product) => {
+  //    return product.category === "Phone";
+  //  })
+  //  ?.filter((product, index) => index < 7);
 
 
   const latestProducts = latest.map((item) => (
@@ -66,7 +66,7 @@ const Home = () => {
     </div>
   ));
 
-  const phoneProducts = phones.map((item) => (
+ {/* const phoneProducts = phones.map((item) => (
     <div key={item._id}>
       <CarouselItem
         name={item.name}
@@ -77,7 +77,7 @@ const Home = () => {
         product={item}
       />
     </div>
-  ));
+  )); */}
 
 
  /* const productss = productData.map((item) =>(
@@ -112,13 +112,13 @@ const Home = () => {
         </div>
       </section>
 
-      <section>
+     {/* <section>
         <div className="container">
           
           <PageHeading  heading={"Mobile Phones"} btnText={"Shop Now"} />
           <ProductCarousel products={phoneProducts} />
         </div>
-      </section>
+  </section>*/}
 
       <FooterLinks />
       

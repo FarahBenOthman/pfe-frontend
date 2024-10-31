@@ -6,6 +6,7 @@ export const shortenText = (text, n) => {
     return text;
   };
 
+  //export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   // Validate email 
 

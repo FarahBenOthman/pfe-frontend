@@ -112,6 +112,63 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+// Review product
+export const reviewProduct = createAsyncThunk(
+  "products/reviewProduct",
+  async ({ id, formData }, thunkAPI) => {
+    try {
+      return await productService.reviewProduct(id, formData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Delete Review 
+export const deleteReview = createAsyncThunk(
+  "products/deleteReview",
+  async ({ id, formData }, thunkAPI) => {
+    try {
+      return await productService.deleteReview(id, formData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Update Review
+export const updateReview = createAsyncThunk(
+  "products/updateReview",
+  async ({ id, formData }, thunkAPI) => {
+    try {
+      return await productService.updateReview(id, formData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 
 const productSlice = createSlice({
   name: "product",
@@ -229,12 +286,62 @@ const productSlice = createSlice({
         state.message = action.payload;
         toast.error(action.payload);
       })
+      // Review product
+      .addCase(reviewProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(reviewProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        toast.success(action.payload);
+      })
+      .addCase(reviewProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        toast.error(action.payload);
+      })
+      // Delete review
+      .addCase(deleteReview.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        toast.success(action.payload);
+      })
+      .addCase(deleteReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        toast.error(action.payload);
+      })
+      // Update review
+      .addCase(updateReview.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        toast.success(action.payload);
+      })
+      .addCase(updateReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        toast.error(action.payload);
+      });
   },
 });
 
 export const { RESET_PROD, GET_PRICE_RANGE } = productSlice.actions;
 
 export const selectProduct = (state) => state.product.product;
+export const selectProducts = (state) => state.product.products;
+
 //export const selectIsLoading = (state) => state.product.isLoading;
 
 export default productSlice.reducer

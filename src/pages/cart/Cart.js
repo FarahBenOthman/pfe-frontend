@@ -110,10 +110,7 @@ const Cart = () => {
                          onClick={() => removeFromCart(cart)}
                         />
                       </td>
-
-
-
-                    </tr>
+                </tr>
                    )
               })}
               </tbody>
@@ -137,7 +134,7 @@ const Cart = () => {
                   </div>
 
                   <div className="--underline --my"></div>
-                  <PaymentOptions />
+                  <PaymentOptions /> 
 
                </Card>
              </div>

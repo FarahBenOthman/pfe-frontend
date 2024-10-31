@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom';
 const categories = [
     {
       id: 1,
-      title: "Gadgets",
+      title: "Basket",
       image: "https://i.ibb.co/5GVkd3m/c1.jpg",
     },
     {
       id: 2,
-      title: "Womens Fashion",
+      title: "Legging",
       image: "https://i.ibb.co/nQKLjrW/c2.jpg",
     },
     {
       id: 3,
-      title: "Sport Sneakers",
+      title: "Training",
       image: "https://i.ibb.co/fNkBYgr/c3.jpg",
     },
   ];

@@ -6,8 +6,9 @@ import { toast } from "react-toastify";
 
 // File upload end
 
-  const url = "https://api.cloudinary.com/v1_1/zinotrust/image/upload";
   const upload_preset = process.env.REACT_APP_UPLOAD_PRESET;
+  const url = "https://api.cloudinary.com/v1_1/farah99/image/upload";
+  
   //const url = "";
 
 const UploadWidget = ({ files, setFiles }) => {

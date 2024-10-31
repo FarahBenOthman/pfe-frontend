@@ -1,92 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import styles from "./CheckoutDetails.module.scss";
-import Card from '../../components/card/Card';
+import { useEffect, useState } from "react";
 import { CountryDropdown } from "react-country-region-selector";
-import { SAVE_BILLING_ADDRESS, SAVE_SHIPPING_ADDRESS, selectBillingAddress, selectPaymentMethod, selectShippingAddress } from '../../redux/features/checkout/checkoutSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import CheckoutSummary from '../../components/checkout/checkoutSummary/CheckoutSummary';
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Card from "../../components/card/Card";
+import {
+  SAVE_BILLING_ADDRESS,
+  SAVE_SHIPPING_ADDRESS,
+  selectBillingAddress,
+  selectPaymentMethod,
+  selectShippingAddress,
+} from "../../redux/features/product/checkoutSlice";
+import styles from "./CheckoutDetails.module.scss";
+import CheckoutSummary from "../../components/checkout/checkoutSummary/CheckoutSummary";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const initialAddressState = {
-    name: "",
-    line1: "",
-    line2: "",
-    city: "",
-    state: "",
-    postal_code: "",
-    country: "",
-    phone: "",
-  };
+  name: "",
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  postal_code: "",
+  country: "",
+  phone: "",
+};
 
 const CheckoutDetails = () => {
-    const [shippingAddress, setShippingAddress] = useState({
-        ...initialAddressState,
-      });
-      const [billingAddress, setBillingAddress] = useState({
-        ...initialAddressState,
-      });
+  const [shippingAddress, setShippingAddress] = useState({
+    ...initialAddressState,
+  });
+  const [billingAddress, setBillingAddress] = useState({
+    ...initialAddressState,
+  });
+  const paymentMethod = useSelector(selectPaymentMethod);
+  console.log("Payment method in CheckoutDetails:", paymentMethod); // Ajoutez ce log
 
-      const paymentMethod = useSelector(selectPaymentMethod);
-      const shipAddress = useSelector(selectShippingAddress);
-      const billAddress = useSelector(selectBillingAddress);
+  const shipAddress = useSelector(selectShippingAddress);
+  const billAddress = useSelector(selectBillingAddress);
 
-      const dispatch = useDispatch();
-      const navigate = useNavigate();
+  useEffect(() => {
+    if (Object.keys(shipAddress).length > 0) {
+      setShippingAddress({ ...shipAddress });
+    }
+    if (Object.keys(billAddress).length > 0) {
+      setBillingAddress({ ...billAddress });
+    }
+  }, [shipAddress, billAddress]);
 
-      const handleShipping = (e) => {
-        const { name, value } = e.target;
-        setShippingAddress({
-          ...shippingAddress,
-          [name]: value,
-        });
-      };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-      const handleBilling = (e) => {
-        const { name, value } = e.target;
-        setBillingAddress({
-          ...billingAddress,
-          [name]: value,
-        });
-      };
+  const handleShipping = (e) => {
+    const { name, value } = e.target;
+    setShippingAddress({
+      ...shippingAddress,
+      [name]: value,
+    });
+  };
 
-      useEffect(() => {
-        if (Object.keys(shipAddress).length > 0) {
-            setShippingAddress({ ...shipAddress });
-          }
-          if (Object.keys(billAddress).length > 0) {
-            setBillingAddress({ ...billAddress });
-          }
-      }, [shipAddress, billAddress])
+  const handleBilling = (e) => {
+    const { name, value } = e.target;
+    setBillingAddress({
+      ...billingAddress,
+      [name]: value,
+    });
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     dispatch(SAVE_SHIPPING_ADDRESS(shippingAddress));
     dispatch(SAVE_BILLING_ADDRESS(billingAddress));
-    if (paymentMethod === "") {
-      toast.info("Please select a payment method!!!")
-      navigate("/cart");
+    
+    console.log("Payment method before check:", paymentMethod); // Log pour le débogage
+  
+    if (!paymentMethod) {
+      toast.info("Please select a payment method!!!");
+      return navigate("/cart"); // Redirection si pas de méthode sélectionnée
     }
-    if (paymentMethod === "stripe") {
-      navigate("/checkout-stripe");
+  
+    // Afficher un message de succès
+    toast.success(`Payment method selected: ${paymentMethod}`);
+  
+    // Logique de navigation
+    switch (paymentMethod) {
+      case "stripe":
+        navigate("/checkout-stripe");
+        break;
+      case "flutterwave":
+        navigate("/checkout-flutterwave");
+        break;
+      case "paypal":
+        navigate("/checkout-paypal");
+        break;
+      case "wallet":
+        navigate("/checkout-wallet");
+        break;
+      default:
+        toast.error("No valid payment method selected");
+        break;
     }
-    if (paymentMethod === "paypal") {
-      navigate("/checkout-paypal");
-    }
-
-    };
-
+  };
 
   return (
     <section>
       <div className={`container ${styles.checkout}`}>
-      <h2>Checkout Details</h2>
-      <form onSubmit={handleSubmit}>
-         <div>
+        <h2>Checkout Details</h2>
+        <form onSubmit={handleSubmit}>
+          <div>
             <Card cardClass={styles.card}>
-            <h3>Shipping Address</h3>
-
-            <label>Recipient Name</label>
+              <h3>Shipping Address</h3>
+              <label>Recipient Name</label>
               <input
                 type="text"
                 placeholder="Recipient Name"
@@ -95,7 +119,6 @@ const CheckoutDetails = () => {
                 value={shippingAddress.name}
                 onChange={(e) => handleShipping(e)}
               />
-
               <label>Address line 1</label>
               <input
                 type="text"
@@ -105,8 +128,6 @@ const CheckoutDetails = () => {
                 value={shippingAddress.line1}
                 onChange={(e) => handleShipping(e)}
               />
-
-
               <label>Address line 2</label>
               <input
                 type="text"
@@ -115,7 +136,6 @@ const CheckoutDetails = () => {
                 value={shippingAddress.line2}
                 onChange={(e) => handleShipping(e)}
               />
-
               <label>City</label>
               <input
                 type="text"
@@ -125,7 +145,6 @@ const CheckoutDetails = () => {
                 value={shippingAddress.city}
                 onChange={(e) => handleShipping(e)}
               />
-
               <label>State</label>
               <input
                 type="text"
@@ -135,8 +154,6 @@ const CheckoutDetails = () => {
                 value={shippingAddress.state}
                 onChange={(e) => handleShipping(e)}
               />
-
-
               <label>Postal code</label>
               <input
                 type="text"
@@ -146,7 +163,8 @@ const CheckoutDetails = () => {
                 value={shippingAddress.postal_code}
                 onChange={(e) => handleShipping(e)}
               />
-
+              {/* COUNTRY INPUT */}
+              <label>Country</label>
               <CountryDropdown
                 className={styles.select}
                 valueType="short"
@@ -160,8 +178,6 @@ const CheckoutDetails = () => {
                   })
                 }
               />
-
-
               <label>Phone</label>
               <input
                 type="text"
@@ -172,8 +188,9 @@ const CheckoutDetails = () => {
                 onChange={(e) => handleShipping(e)}
               />
             </Card>
+            {/* BILLING ADDRESS */}
             <Card cardClass={styles.card}>
-            <h3>Billing Address</h3>
+              <h3>Billing Address</h3>
               <label>Recipient Name</label>
               <input
                 type="text"
@@ -255,16 +272,16 @@ const CheckoutDetails = () => {
                 Proceed To Checkout
               </button>
             </Card>
-         </div>
-         <div>
+          </div>
+          <div>
             <Card cardClass={styles.card}>
-             <CheckoutSummary /> 
+              <CheckoutSummary />
             </Card>
           </div>
-      </form>
+        </form>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default CheckoutDetails
+export default CheckoutDetails;

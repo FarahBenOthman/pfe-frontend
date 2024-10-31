@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 import DOMPurify from "dompurify";
 import Card from '../../card/Card';
 import { ADD_TO_CART, DECREASE_CART, saveCartDB, selectCartItems } from '../../../redux/features/product/cartSlice';
+import { addToWishlist } from '../../../redux/features/auth/authSlice';
+import StarRating from "react-star-ratings";
+import ProductRatingSummary from "../productRating/productRatingSummary";
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -55,6 +58,15 @@ const ProductDetails = () => {
         dispatch(DECREASE_CART(product));
       //  dispatch(CALCULATE_TOTAL_QUANTITY());
         dispatch(saveCartDB({ cartItems: JSON.parse(localStorage.getItem("cartItems")) }));
+      };
+
+      //Add wishlist
+      const addWishlist = (product) => {
+        const productData = {
+          productId: product._id,
+        };
+        console.log(productData);
+        dispatch(addToWishlist(productData));
       };
 
 
@@ -193,7 +205,7 @@ const ProductDetails = () => {
                   )}
                   <button
                     className="--btn --btn-danger"
-                   // onClick={() => addWishlist(product)}
+                    onClick={() => addWishlist(product)}
                   >
                     ADD TO WISHLIST
                   </button>
@@ -211,6 +223,48 @@ const ProductDetails = () => {
         {/* Review */}
         <Card cardClass={styles.card}>
         <h3>Product Reviews</h3>
+        <ProductRating
+            averageRating={averageRating}
+            noOfRatings={product?.ratings.length}
+          />
+           <div className="--underline"></div>
+           <div  className={styles.ratings}>
+           {product !== null && product?.ratings.length > 0 && (
+              <ProductRatingSummary ratings={product?.ratings} />
+            )}
+
+            <div className="--m">
+              {product?.ratings.length === 0 ? (
+                <p>There are no reviews for this product yet.</p>
+              ) : (
+                <>
+                  {product?.ratings.map((item, index) => {
+                    const { star, review, reviewDate, name, userID } = item;
+                    return (
+                      <div key={index} className={styles.review}>
+                        {/* <StarsRating value={star} style={{ fontSize: 10 }} /> */}
+                        <StarRating
+                          starDimension="20px"
+                          starSpacing="2px"
+                          starRatedColor="#F6B01E"
+                          rating={star}
+                          editing={false}
+                        />
+                        <p>{review}</p>
+                        <span>
+                          <b>{reviewDate}</b>
+                        </span>
+                        <br />
+                        <span>
+                          <b>by: {name}</b>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+           </div>
         </Card>
         </div>
     </section>
